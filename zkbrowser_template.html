@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>node @ {{zkPath}}</title>
+	</head>
+	<body>
+	<a href="{{url}}/..">^</a><br>
+	<a href="{{url}}?delete=yes">delete</a>
+	<br>
+Path: {{zkPath}} 
+	<br>
+	<hr>Data:<br><textarea rows="20" cols="100">{{zkData}}</textarea>
+	<hr>Children:
+	<ul>
+{% for child in zkChildren %}
+    		<li><a href="{{url}}/{{child}}">{{child}}</a></li>
+{% end %}
+	</ul>
+	<hr>Info:<br><textarea rows="20" cols="100">{{zkInfo}}</textarea>
+	</body>
+</html>
