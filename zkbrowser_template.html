@@ -17,12 +17,12 @@
 Path: {{zkPath}} 
 	<br>
 	<hr>Data:<br><textarea rows="20" cols="100">{{zkData}}</textarea>
+	<hr>Info:<br><textarea rows="20" cols="100">{{zkInfo}}</textarea>
 	<hr>Children:
 	<ul>
 {% for child in zkChildren %}
     		<li><a href="{{url}}/{{child}}">{{child}}</a></li>
 {% end %}
 	</ul>
-	<hr>Info:<br><textarea rows="20" cols="100">{{zkInfo}}</textarea>
 	</body>
 </html>
