@@ -3,8 +3,16 @@
 		<title>node @ {{zkPath}}</title>
 	</head>
 	<body>
-	<a href="{{url}}/..">^</a><br>
-	<a href="{{url}}?delete=yes">delete</a>
+    <script>
+        function f() {
+            var r = confirm("Really??");
+            if (r == true) {
+                location.href = "{{url}}?delete=yes";
+            }
+        }
+    </script>
+	<a href="{{url}}/.."><button>^</button></a>
+    <button onclick="f();">DELETE</button>
 	<br>
 Path: {{zkPath}} 
 	<br>
