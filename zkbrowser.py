@@ -43,7 +43,7 @@ class RequestHandler(tornado.web.RequestHandler):
             zk.delete(zkPath, recursive=True)
             self.redirect(url + '/..')
         else:
-            zkChildren = zk.get_children(zkPath)
+            zkChildren = sorted(zk.get_children(zkPath))
             raw_data = zk.get(zkPath)
             zkData = raw_data[0]
             zkInfo = raw_data[1]
