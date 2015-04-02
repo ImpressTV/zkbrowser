@@ -4,10 +4,11 @@ A tiny python script to browsing and deleting nodes in zookeeper in your favorit
 ## Required modules
 * kazoo
 * tornado
+* argparse
 
 ## Installing
 ```
-sudo pip install tornado kazoo
+sudo pip install tornado kazoo argparse
 ```
 
 ## Running
