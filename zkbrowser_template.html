@@ -14,15 +14,23 @@
         function setFn() {
             var r = confirm("Really??");
             if (r == true) {
-                var textContent = document.getElementById('data').value;
+                var textContent = document.getElementById('data').value.replace(/\s+/g, '');
 
                 location.href = "{{url}}?set=yes&value=" + btoa(textContent);
             }
+        }
+
+        function prettyJSON() {
+            var dataTextAreaElem = document.getElementById('data')
+            var prettyJSON = JSON.stringify(JSON.parse(dataTextAreaElem.value), null, 4);
+
+            dataTextAreaElem.value = prettyJSON;
         }
     </script>
 	<a href="{{url}}/.."><button>^</button></a>
     <button onclick="deleteFn();">DELETE</button>
     <button onclick="setFn();">SET</button>
+    <button onclick="prettyJSON();">PRETTYJSON</button>
 	<br>
 Path: {{zkPath}} 
 	<br>
