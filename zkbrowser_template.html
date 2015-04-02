@@ -4,7 +4,7 @@
 	</head>
 	<body>
     <script>
-        function f() {
+        function deleteFn() {
             var r = confirm("Really??");
             if (r == true) {
                 location.href = "{{url}}?delete=yes";
@@ -12,7 +12,7 @@
         }
     </script>
 	<a href="{{url}}/.."><button>^</button></a>
-    <button onclick="f();">DELETE</button>
+    <button onclick="deleteFn();">DELETE</button>
 	<br>
 Path: {{zkPath}} 
 	<br>
