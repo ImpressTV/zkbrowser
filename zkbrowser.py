@@ -7,6 +7,7 @@ import tornado.ioloop
 import kazoo
 import kazoo.client
 import argparse
+import os
 
 parser = argparse.ArgumentParser(description='Zookeeper client browser')
 parser.add_argument(
@@ -55,7 +56,9 @@ class RequestHandler(tornado.web.RequestHandler):
                 zkChildren=zkChildren,
                 url=url)
 
-app = tornado.web.Application([(r'/(.)*', RequestHandler)])
+app = tornado.web.Application([
+    (r'/(favicon\.ico)', tornado.web.StaticFileHandler, {'path': os.getcwd()}),
+    (r'/(.)*', RequestHandler)])
 http_server = tornado.httpserver.HTTPServer(app)
 http_server.listen(int(args.listenport))
 
