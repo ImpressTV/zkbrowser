@@ -7,6 +7,7 @@ import tornado.ioloop
 import kazoo
 import kazoo.client
 import argparse
+import base64
 import os
 
 parser = argparse.ArgumentParser(description='Zookeeper client browser')
@@ -34,6 +35,8 @@ class RequestHandler(tornado.web.RequestHandler):
         print(self.request.full_url())
         zkPath = self.request.path
         zkDelete = self.get_query_argument('delete', default='no')
+        zkSet = self.get_query_argument('set', default='no')
+        zkSetValue = self.get_query_argument('value', default='')
         path = self.request.path.replace('//', '/')
         url = self.request.protocol + "://" + self.request.host + path
 
@@ -43,6 +46,9 @@ class RequestHandler(tornado.web.RequestHandler):
         if zkDelete == 'yes':
             zk.delete(zkPath, recursive=True)
             self.redirect(url + '/..')
+        elif zkSet == 'yes':
+            zk.set(zkPath, base64.b64decode(zkSetValue))
+            self.redirect(url)
         else:
             zkChildren = sorted(zk.get_children(zkPath))
             raw_data = zk.get(zkPath)

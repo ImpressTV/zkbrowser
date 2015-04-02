@@ -10,13 +10,23 @@
                 location.href = "{{url}}?delete=yes";
             }
         }
+
+        function setFn() {
+            var r = confirm("Really??");
+            if (r == true) {
+                var textContent = document.getElementById('data').value;
+
+                location.href = "{{url}}?set=yes&value=" + btoa(textContent);
+            }
+        }
     </script>
 	<a href="{{url}}/.."><button>^</button></a>
     <button onclick="deleteFn();">DELETE</button>
+    <button onclick="setFn();">SET</button>
 	<br>
 Path: {{zkPath}} 
 	<br>
-	<hr>Data:<br><textarea rows="20" cols="100">{{zkData}}</textarea>
+	<hr>Data:<br><textarea rows="20" cols="100" id="data">{{zkData}}</textarea>
 	<hr>Info:<br><textarea rows="20" cols="100">{{zkInfo}}</textarea>
 	<hr>Children:
 	<ul>
