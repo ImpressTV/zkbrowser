@@ -9,6 +9,8 @@ import kazoo.client
 import argparse
 import base64
 import os
+import logging
+import sys
 
 parser = argparse.ArgumentParser(description='Zookeeper client browser')
 parser.add_argument(
@@ -25,18 +27,28 @@ parser.add_argument(
     default='localhost:2181')
 args = parser.parse_args()
 
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
+
 zk = kazoo.client.KazooClient(hosts=args.hosts)
 zk.start()
 
-print('Kazoo connected...')
+logging.info('Kazoo connected')
 
 class RequestHandler(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
-        print(self.request.full_url())
+        logging.info('GET request: {}'.format(self.request.full_url()))
+
         zkPath = self.request.path
         zkDelete = self.get_query_argument('delete', default='no')
         zkSet = self.get_query_argument('set', default='no')
-        zkSetValue = self.get_query_argument('value', default='')
+        zkSetValueB64 = self.get_query_argument('value', default='')
         path = self.request.path.replace('//', '/')
         url = self.request.protocol + "://" + self.request.host + path
 
@@ -44,12 +56,19 @@ class RequestHandler(tornado.web.RequestHandler):
             url = url[:-1]
 
         if zkDelete == 'yes':
+            logging.debug('Deleting node: {}'.format(zkPath))
+
             zk.delete(zkPath, recursive=True)
             self.redirect(url + '/..')
         elif zkSet == 'yes':
-            zk.set(zkPath, base64.b64decode(zkSetValue))
+            zkSetValue = base64.b64decode(zkSetValueB64)
+            logging.debug('Setting node content: {} : {}'.format(zkPath, zkSetValue))
+
+            zk.set(zkPath, zkSetValue)
             self.redirect(url)
         else:
+            logging.debug('Printing information of node {}'.format(zkPath))
+
             zkChildren = sorted(zk.get_children(zkPath))
             raw_data = zk.get(zkPath)
             zkData = raw_data[0]
@@ -62,11 +81,14 @@ class RequestHandler(tornado.web.RequestHandler):
                 zkChildren=zkChildren,
                 url=url)
 
+logging.info('Setting up web server')
+
 app = tornado.web.Application([
     (r'/(favicon\.ico)', tornado.web.StaticFileHandler, {'path': os.getcwd()}),
     (r'/(.)*', RequestHandler)])
 http_server = tornado.httpserver.HTTPServer(app)
 http_server.listen(int(args.listenport))
 
-#Starting the server
+logging.info('Starting web server')
+
 tornado.ioloop.IOLoop.instance().start()
